@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us – Hotelier Hub</title>
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('hh_theme');
+      document.documentElement.setAttribute('data-theme', saved || 'dark');
+    }catch(e){ document.documentElement.setAttribute('data-theme','dark'); }
+  })();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --cloud:#14161F;
+    --card:#1D2130;
+    --ink:#EDEEF3;
+    --slate:#9CA0AE;
+    --line:#2B2F40;
+
+    --cobalt:#6C93E8;
+    --cobalt-soft:#22314F;
+    --teal:#3FCDB0;
+    --teal-soft:#173B34;
+    --coral:#FF8A66;
+    --coral-soft:#3D2620;
+    --plum:#C9A0EE;
+    --plum-soft:#332545;
+    --amber:#F3C25A;
+    --amber-soft:#3A2E14;
+
+    --radius:10px;
+  }
+
+  [data-theme="light"]{
+    --cloud:#F5F6F2; --card:#FFFFFF; --ink:#1C1F2B; --slate:#666B63; --line:#E4E3D8;
+    --cobalt:#2E5AA8; --cobalt-soft:#EAF0FA;
+    --teal:#16826F; --teal-soft:#E6F4F0;
+    --coral:#E2603D; --coral-soft:#FCEBE4;
+    --plum:#7C4FA3; --plum-soft:#F2EAF7;
+    --amber:#C98A1F; --amber-soft:#FBF1DE;
+  }
+
+  [data-theme="ocean"]{
+    --cloud:#EEF5F6; --card:#FFFFFF; --ink:#123539; --slate:#4C6C70; --line:#D8E8EA;
+    --cobalt:#1E6FA8; --cobalt-soft:#DDEEFA;
+    --teal:#0E8C82; --teal-soft:#DAF2EE;
+    --coral:#DB6B4E; --coral-soft:#FBE7E0;
+    --plum:#5C6FB0; --plum-soft:#E6E9F8;
+    --amber:#C08A26; --amber-soft:#F7EBD3;
+  }
+
+  [data-theme="sunset"]{
+    --cloud:#241A1E; --card:#2E2126; --ink:#F5E9E4; --slate:#C9A79E; --line:#3E2B30;
+    --cobalt:#8FA6E0; --cobalt-soft:#3A3F5C;
+    --teal:#5BC7A9; --teal-soft:#26433C;
+    --coral:#FF7A5C; --coral-soft:#4A2A22;
+    --plum:#E39BD0; --plum-soft:#452C40;
+    --amber:#F5B84D; --amber-soft:#4A3620;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cloud);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  header{
+    background:#14161F;
+    color:#fff;
+    padding:1rem 1.25rem 2.5rem;
+  }
+  .top-bar{
+    max-width:1160px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;
+  }
+  .menu-toggle{
+    background:none;border:1px solid #3A3E4E;color:#fff;
+    width:38px;height:38px;border-radius:8px;cursor:pointer;
+    font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .menu-toggle:hover{border-color:var(--coral);}
+  .top-controls{display:flex;align-items:center;gap:.6rem;}
+  #theme-select{
+    background:#252938;color:#fff;border:1px solid #3A3E4E;border-radius:8px;
+    padding:.45rem .6rem;font-size:.8rem;font-family:'Inter',sans-serif;cursor:pointer;
+  }
+  #theme-select:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
+
+  nav.site-menu{
+    max-width:1160px;margin:.6rem auto 0;
+    display:none;flex-direction:column;gap:.1rem;
+    background:#1B1E29;border:1px solid #3A3E4E;border-radius:8px;
+    overflow:hidden;
+  }
+  nav.site-menu.open{display:flex;}
+  nav.site-menu a{
+    padding:.75rem 1rem;color:#fff;text-decoration:none;font-size:.9rem;
+    border-top:1px solid #2B2F3D;
+  }
+  nav.site-menu a:first-child{border-top:none;}
+  nav.site-menu a:hover{background:#252938;}
+  .brand{
+    display:flex;align-items:center;gap:.7rem;
+    max-width:1160px;margin:1rem auto 0;
+  }
+  .brand-mark{
+    width:36px;height:36px;border-radius:9px;
+    background:linear-gradient(135deg,var(--coral),var(--plum));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;
+    flex-shrink:0;
+  }
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.45rem;margin:0;}
+  .brand .tagline{font-size:.72rem;color:#B9BCC9;letter-spacing:.07em;text-transform:uppercase;margin-top:.1rem;}
+
+  .header-row{
+    max-width:1160px;margin:1.5rem auto 0;
+    display:flex;flex-wrap:wrap;gap:1.25rem;
+    align-items:flex-end;justify-content:space-between;
+  }
+
+  .search-label{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:#B9BCC9;margin-bottom:.4rem;display:block;}
+  .search-row{display:flex;gap:.5rem;max-width:340px;}
+  #postcode{
+    flex:1;padding:.65rem .8rem;border:1.5px solid #3A3E4E;border-radius:8px;
+    background:#252938;color:#fff;font-family:'IBM Plex Mono',monospace;
+    font-size:.9rem;letter-spacing:.03em;text-transform:uppercase;
+  }
+  #postcode::placeholder{color:#767A8A;}
+  #postcode:focus{outline:none;border-color:var(--coral);}
+  #locate-btn{
+    background:var(--coral);color:#fff;border:none;padding:0 1rem;
+    font-weight:600;font-size:.82rem;border-radius:8px;cursor:pointer;
+  }
+  #locate-btn:hover{background:#c94f30;}
+  #postcode:focus-visible, #locate-btn:focus-visible, #refresh-btn:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
+  #search-status{font-size:.75rem;color:#B9BCC9;margin-top:.5rem;min-height:1.1em;}
+
+  .your-hotel-bar{
+    max-width:1160px;margin:1.1rem auto 0;
+    display:flex;align-items:center;gap:.6rem;
+    background:#252938;border:1px solid #3A3E4E;border-radius:8px;
+    padding:.55rem .9rem;
+  }
+  .your-hotel-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#B9BCC9;}
+  .your-hotel-name{font-weight:600;font-size:.92rem;flex:1;}
+  #change-hotel-btn{
+    background:none;border:1px solid #3A3E4E;color:#fff;
+    padding:.3rem .7rem;border-radius:6px;font-size:.75rem;cursor:pointer;
+  }
+  #change-hotel-btn:hover{border-color:var(--coral);}
+
+  .hotel-picker{
+    margin-top:.6rem;background:#252938;border:1px solid #3A3E4E;border-radius:8px;
+    max-width:340px;overflow:hidden;
+  }
+  .hotel-picker-item{
+    width:100%;text-align:left;background:none;border:none;color:#fff;
+    padding:.6rem .8rem;font-size:.85rem;cursor:pointer;
+    border-top:1px solid #3A3E4E;display:flex;justify-content:space-between;gap:.5rem;
+  }
+  .hotel-picker-item:first-child{border-top:none;}
+  .hotel-picker-item:hover{background:#2E3346;}
+  .hotel-picker-item .dist{color:#B9BCC9;font-size:.75rem;flex-shrink:0;}
+
+  .refresh-block{display:flex;align-items:center;gap:.9rem;}
+  .countdown{display:flex;gap:.3rem;align-items:center;font-family:'IBM Plex Mono',monospace;}
+  .flip{
+    background:#252938;border:1px solid #3A3E4E;border-radius:6px;
+    padding:.4rem .55rem;font-size:1.05rem;font-weight:600;
+    min-width:2.1em;text-align:center;color:#fff;
+  }
+  .countdown-label{font-size:.68rem;color:#B9BCC9;text-transform:uppercase;letter-spacing:.06em;margin-right:.2rem;}
+  #refresh-btn{
+    background:none;border:1.5px solid #3A3E4E;color:#fff;
+    padding:.5rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;
+    cursor:pointer;display:flex;align-items:center;gap:.4rem;
+  }
+  #refresh-btn:hover{border-color:var(--coral);}
+  #refresh-btn .ico{display:inline-block;transition:transform .4s ease;}
+  #refresh-btn.spinning .ico{animation:spin .6s linear;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  main{max-width:1160px;margin:0 auto;padding:0 1.25rem 3rem;}
+  .board{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:-1.25rem;}
+  @media(min-width:760px){
+    .board{grid-template-columns:1fr 1fr;}
+    .board .wide{grid-column:1 / -1;}
+  }
+  @media(min-width:1040px){
+    .board{grid-template-columns:1fr 1fr 1fr;}
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 1px 2px rgba(28,31,43,.06), 0 8px 24px -18px rgba(28,31,43,.25);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .card-head{
+    padding:1rem 1.25rem .8rem;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:3px solid var(--accent, var(--cobalt));
+  }
+  .card-head h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.05rem;margin:0;
+    color:var(--accent, var(--cobalt));
+  }
+  .card-head .chip{
+    font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+    background:var(--accent-soft, var(--cobalt-soft));color:var(--accent, var(--cobalt));
+    padding:.25rem .55rem;border-radius:999px;
+  }
+  .card-body{padding:1rem 1.25rem 1.25rem;flex:1;}
+
+  .news .card-head{--accent:var(--cobalt);--accent-soft:var(--cobalt-soft);}
+  .hotels .card-head{--accent:var(--teal);--accent-soft:var(--teal-soft);}
+  .dish .card-head{--accent:var(--coral);--accent-soft:var(--coral-soft);}
+  .drink .card-head{--accent:var(--plum);--accent-soft:var(--plum-soft);}
+  .today .card-head{--accent:var(--amber);--accent-soft:var(--amber-soft);}
+  .reviews .card-head{--accent:var(--teal);--accent-soft:var(--teal-soft);}
+
+  .news-item{padding:.75rem 0;border-top:1px solid var(--line);}
+  .news-item:first-child{border-top:none;padding-top:0;}
+  .news-item h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;margin:0 0 .25rem;line-height:1.35;}
+  .news-item a{text-decoration:none;}
+  .news-item a:hover h3{text-decoration:underline;}
+  .news-meta{font-size:.7rem;color:var(--slate);font-family:'IBM Plex Mono',monospace;}
+
+  .status-msg{font-size:.85rem;color:var(--slate);line-height:1.5;padding:.5rem 0;}
+  .status-msg.error{color:var(--coral);}
+
+  .feature-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.15rem;margin:0 0 .25rem;}
+  .feature-desc{font-size:.9rem;color:var(--slate);line-height:1.5;margin:0;}
+  .season-note{font-size:.7rem;color:var(--slate);margin-top:.9rem;padding-top:.7rem;border-top:1px dashed var(--line);}
+
+  .today-item{padding:.7rem 0;border-top:1px solid var(--line);}
+  .today-item:first-child{border-top:none;padding-top:0;}
+  .today-item .label{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--amber);display:block;margin-bottom:.25rem;}
+  .today-item p{margin:0;font-size:.87rem;line-height:1.5;}
+
+  .hotel-card{padding:.8rem 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;}
+  .hotel-card:first-child{border-top:none;padding-top:0;}
+  .hotel-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;margin:0 0 .15rem;}
+  .hotel-dist{font-size:.73rem;color:var(--slate);}
+  .rate{text-align:right;flex-shrink:0;}
+  .rate .amount{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--teal);}
+  .rate .label{font-size:.65rem;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;}
+
+  .empty-state{padding:.5rem 0 1rem;text-align:center;color:var(--slate);font-size:.87rem;line-height:1.5;}
+
+  .review-src-group{margin-bottom:1rem;}
+  .review-src-group:last-child{margin-bottom:0;}
+  .review-src-heading{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);font-weight:600;border-bottom:1.5px solid var(--teal);padding-bottom:.3rem;margin-bottom:.5rem;}
+  .review-src-heading .avg{font-family:'IBM Plex Mono',monospace;color:var(--slate);text-transform:none;letter-spacing:0;}
+  .review{padding:.5rem 0;border-top:1px dashed var(--line);}
+  .review:first-child{border-top:none;}
+  .review-stars{font-size:.78rem;color:var(--amber);letter-spacing:.1em;}
+  .review p{font-size:.8rem;margin:.2rem 0 .15rem;line-height:1.4;}
+  .review-meta{font-size:.68rem;color:var(--slate);}
+
+  footer{max-width:1160px;margin:0 auto;padding:1rem 1.25rem 2.5rem;font-size:.74rem;color:var(--slate);line-height:1.6;}
+  footer strong{color:var(--ink);}
+  footer a{color:var(--coral);}
+
+  /* ---------- Cookie consent ---------- */
+  #cookie-banner{
+    position:fixed;left:0;right:0;bottom:0;z-index:1000;
+    background:#14161F;color:#fff;border-top:1px solid #3A3E4E;
+    padding:1rem 1.25rem;display:none;
+  }
+  #cookie-banner.show{display:block;}
+  .cookie-inner{max-width:1160px;margin:0 auto;}
+  .cookie-inner p{font-size:.83rem;line-height:1.5;color:#D3D5DE;margin:0 0 .75rem;}
+  .cookie-inner a{color:var(--coral);}
+  .cookie-options{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-bottom:.85rem;}
+  .cookie-option{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:#D3D5DE;}
+  .cookie-actions{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .cookie-btn{
+    border-radius:8px;padding:.55rem 1rem;font-size:.8rem;font-weight:600;
+    cursor:pointer;border:1.5px solid #3A3E4E;background:none;color:#fff;
+  }
+  .cookie-btn.primary{background:var(--coral);border-color:var(--coral);}
+  .cookie-btn:hover{border-color:var(--coral);}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
+</style>
+<style>
+  .content-page{max-width:760px;margin:0 auto;padding:2.5rem 1.25rem 3rem;}
+  .content-page h2{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;margin:0 0 1rem;}
+  .content-page h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;margin:2rem 0 .6rem;}
+  .content-page p{font-size:.95rem;line-height:1.65;color:var(--slate);margin:0 0 1rem;}
+  .content-page ul{font-size:.95rem;line-height:1.65;color:var(--slate);padding-left:1.2rem;}
+  .content-page li{margin-bottom:.4rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top-bar">
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">&#9776;</button>
+    <div class="top-controls">
+      <label class="sr-only" for="theme-select">Theme</label>
+      <select id="theme-select">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+        <option value="ocean">Ocean</option>
+        <option value="sunset">Sunset</option>
+      </select>
+    </div>
+  </div>
+
+  <nav class="site-menu" id="site-menu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+  </nav>
+
+  <div class="brand">
+    <div class="brand-mark">HH</div>
+    <div>
+      <h1>Hotelier Hub</h1>
+      <div class="tagline">UK trade news &amp; local intelligence</div>
+    </div>
+  </div>
+</header>
+
+<main class="content-page">
+  <h2>About Hotelier Hub</h2>
+  <p>Hotelier Hub is a single dashboard built for people running independent hotels in the UK &mdash; a quick place to check the day's trade news, see what's happening locally, glance at nearby competitors, and get a bit of daily inspiration for the kitchen, the bar, and the front desk.</p>
+
+  <h3>What it pulls together</h3>
+  <ul>
+    <li><strong>UK Hotel Trade News</strong> &mdash; industry headlines relevant to hospitality operators</li>
+    <li><strong>Local News</strong> &mdash; headlines for your postcode's area</li>
+    <li><strong>Nearby Hotels</strong> &mdash; real hotels near you, sourced from OpenStreetMap</li>
+    <li><strong>Dish &amp; Drink of the Day</strong> &mdash; a seasonal suggestion that changes daily</li>
+    <li><strong>Today for the Team</strong> &mdash; a business tip, a quote, and a sales idea, refreshed daily</li>
+  </ul>
+
+  <h3>Why it exists</h3>
+  <p>Running a hotel means checking half a dozen different sites before you've even had your coffee. Hotelier Hub puts the useful bits on one screen, refreshed automatically, so that first read of the day takes less time.</p>
+
+  <h3>Still a work in progress</h3>
+  <p>This is an early build. Room rates and third-party review aggregation (Booking.com, Tripadvisor) aren't live yet &mdash; they need partner API approvals that take time to come through. Everything else on the dashboard is real, working data.</p>
+</main>
+
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p>We use a small number of cookies to remember things you've chosen, like your saved hotel and theme. See our <a href="privacy.html">Privacy Policy</a> for details.</p>
+    <div class="cookie-options">
+      <label class="cookie-option"><input type="checkbox" checked disabled> Necessary (always on)</label>
+      <label class="cookie-option"><input type="checkbox" id="consent-analytics"> Analytics (not currently used)</label>
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn primary" id="cookie-accept" type="button">Accept all</button>
+      <button class="cookie-btn" id="cookie-reject" type="button">Reject non-essential</button>
+      <button class="cookie-btn" id="cookie-save" type="button">Save preferences</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const menuToggle = document.getElementById('menu-toggle');
+  const siteMenu = document.getElementById('site-menu');
+  menuToggle.addEventListener('click', () => {
+    const open = siteMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  const themeSelect = document.getElementById('theme-select');
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  themeSelect.value = currentTheme;
+  themeSelect.addEventListener('change', () => {
+    const val = themeSelect.value;
+    document.documentElement.setAttribute('data-theme', val);
+    try{ localStorage.setItem('hh_theme', val); }catch(e){}
+  });
+
+  function getConsentCookie(){
+    const match = document.cookie.split('; ').find(row => row.startsWith('hh_consent='));
+    if(!match) return null;
+    try{ return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('='))); }catch(e){ return null; }
+  }
+  function setConsentCookie(value){
+    const d = new Date(); d.setTime(d.getTime() + 365*24*60*60*1000);
+    document.cookie = 'hh_consent=' + encodeURIComponent(JSON.stringify(value)) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+  }
+  const banner = document.getElementById('cookie-banner');
+  const existingConsent = getConsentCookie();
+  if(!existingConsent){ banner.classList.add('show'); }
+  else { document.getElementById('consent-analytics').checked = !!existingConsent.analytics; }
+
+  document.getElementById('cookie-accept').addEventListener('click', () => {
+    setConsentCookie({necessary:true, analytics:true});
+    banner.classList.remove('show');
+  });
+  document.getElementById('cookie-reject').addEventListener('click', () => {
+    setConsentCookie({necessary:true, analytics:false});
+    banner.classList.remove('show');
+  });
+  document.getElementById('cookie-save').addEventListener('click', () => {
+    setConsentCookie({necessary:true, analytics: document.getElementById('consent-analytics').checked});
+    banner.classList.remove('show');
+  });
+})();
+</script>
+
+</body>
+</html>
