@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotelier Hub</title>
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('hh_theme');
+      document.documentElement.setAttribute('data-theme', saved || 'dark');
+    }catch(e){ document.documentElement.setAttribute('data-theme','dark'); }
+  })();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --cloud:#14161F;
+    --card:#1D2130;
+    --ink:#EDEEF3;
+    --slate:#9CA0AE;
+    --line:#2B2F40;
+
+    --cobalt:#6C93E8;
+    --cobalt-soft:#22314F;
+    --teal:#3FCDB0;
+    --teal-soft:#173B34;
+    --coral:#FF8A66;
+    --coral-soft:#3D2620;
+    --plum:#C9A0EE;
+    --plum-soft:#332545;
+    --amber:#F3C25A;
+    --amber-soft:#3A2E14;
+
+    --radius:10px;
+  }
+
+  [data-theme="light"]{
+    --cloud:#F5F6F2; --card:#FFFFFF; --ink:#1C1F2B; --slate:#666B63; --line:#E4E3D8;
+    --cobalt:#2E5AA8; --cobalt-soft:#EAF0FA;
+    --teal:#16826F; --teal-soft:#E6F4F0;
+    --coral:#E2603D; --coral-soft:#FCEBE4;
+    --plum:#7C4FA3; --plum-soft:#F2EAF7;
+    --amber:#C98A1F; --amber-soft:#FBF1DE;
+  }
+
+  [data-theme="ocean"]{
+    --cloud:#EEF5F6; --card:#FFFFFF; --ink:#123539; --slate:#4C6C70; --line:#D8E8EA;
+    --cobalt:#1E6FA8; --cobalt-soft:#DDEEFA;
+    --teal:#0E8C82; --teal-soft:#DAF2EE;
+    --coral:#DB6B4E; --coral-soft:#FBE7E0;
+    --plum:#5C6FB0; --plum-soft:#E6E9F8;
+    --amber:#C08A26; --amber-soft:#F7EBD3;
+  }
+
+  [data-theme="sunset"]{
+    --cloud:#241A1E; --card:#2E2126; --ink:#F5E9E4; --slate:#C9A79E; --line:#3E2B30;
+    --cobalt:#8FA6E0; --cobalt-soft:#3A3F5C;
+    --teal:#5BC7A9; --teal-soft:#26433C;
+    --coral:#FF7A5C; --coral-soft:#4A2A22;
+    --plum:#E39BD0; --plum-soft:#452C40;
+    --amber:#F5B84D; --amber-soft:#4A3620;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cloud);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  header{
+    background:#14161F;
+    color:#fff;
+    padding:1rem 1.25rem 2.5rem;
+  }
+  .top-bar{
+    max-width:1160px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;
+  }
+  .menu-toggle{
+    background:none;border:1px solid #3A3E4E;color:#fff;
+    width:38px;height:38px;border-radius:8px;cursor:pointer;
+    font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .menu-toggle:hover{border-color:var(--coral);}
+  .top-controls{display:flex;align-items:center;gap:.6rem;}
+  #theme-select{
+    background:#252938;color:#fff;border:1px solid #3A3E4E;border-radius:8px;
+    padding:.45rem .6rem;font-size:.8rem;font-family:'Inter',sans-serif;cursor:pointer;
+  }
+  #theme-select:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
+
+  nav.site-menu{
+    max-width:1160px;margin:.6rem auto 0;
+    display:none;flex-direction:column;gap:.1rem;
+    background:#1B1E29;border:1px solid #3A3E4E;border-radius:8px;
+    overflow:hidden;
+  }
+  nav.site-menu.open{display:flex;}
+  nav.site-menu a{
+    padding:.75rem 1rem;color:#fff;text-decoration:none;font-size:.9rem;
+    border-top:1px solid #2B2F3D;
+  }
+  nav.site-menu a:first-child{border-top:none;}
+  nav.site-menu a:hover{background:#252938;}
+  .brand{
+    display:flex;align-items:center;gap:.7rem;
+    max-width:1160px;margin:1rem auto 0;
+  }
+  .brand-mark{
+    width:36px;height:36px;border-radius:9px;
+    background:linear-gradient(135deg,var(--coral),var(--plum));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;
+    flex-shrink:0;
+  }
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.45rem;margin:0;}
+  .brand .tagline{font-size:.72rem;color:#B9BCC9;letter-spacing:.07em;text-transform:uppercase;margin-top:.1rem;}
+
+  .header-row{
+    max-width:1160px;margin:1.5rem auto 0;
+    display:flex;flex-wrap:wrap;gap:1.25rem;
+    align-items:flex-end;justify-content:space-between;
+  }
+
+  .search-label{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:#B9BCC9;margin-bottom:.4rem;display:block;}
+  .search-row{display:flex;gap:.5rem;max-width:340px;}
+  #postcode{
+    flex:1;padding:.65rem .8rem;border:1.5px solid #3A3E4E;border-radius:8px;
+    background:#252938;color:#fff;font-family:'IBM Plex Mono',monospace;
+    font-size:.9rem;letter-spacing:.03em;text-transform:uppercase;
+  }
+  #postcode::placeholder{color:#767A8A;}
+  #postcode:focus{outline:none;border-color:var(--coral);}
+  #locate-btn{
+    background:var(--coral);color:#fff;border:none;padding:0 1rem;
+    font-weight:600;font-size:.82rem;border-radius:8px;cursor:pointer;
+  }
+  #locate-btn:hover{background:#c94f30;}
+  #postcode:focus-visible, #locate-btn:focus-visible, #refresh-btn:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
+  #search-status{font-size:.75rem;color:#B9BCC9;margin-top:.5rem;min-height:1.1em;}
+
+  .your-hotel-bar{
+    max-width:1160px;margin:1.1rem auto 0;
+    display:flex;align-items:center;gap:.6rem;
+    background:#252938;border:1px solid #3A3E4E;border-radius:8px;
+    padding:.55rem .9rem;
+  }
+  .your-hotel-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#B9BCC9;}
+  .your-hotel-name{font-weight:600;font-size:.92rem;flex:1;}
+  #change-hotel-btn{
+    background:none;border:1px solid #3A3E4E;color:#fff;
+    padding:.3rem .7rem;border-radius:6px;font-size:.75rem;cursor:pointer;
+  }
+  #change-hotel-btn:hover{border-color:var(--coral);}
+
+  .hotel-picker{
+    margin-top:.6rem;background:#252938;border:1px solid #3A3E4E;border-radius:8px;
+    max-width:340px;overflow:hidden;
+  }
+  .hotel-picker-item{
+    width:100%;text-align:left;background:none;border:none;color:#fff;
+    padding:.6rem .8rem;font-size:.85rem;cursor:pointer;
+    border-top:1px solid #3A3E4E;display:flex;justify-content:space-between;gap:.5rem;
+  }
+  .hotel-picker-item:first-child{border-top:none;}
+  .hotel-picker-item:hover{background:#2E3346;}
+  .hotel-picker-item .dist{color:#B9BCC9;font-size:.75rem;flex-shrink:0;}
+
+  .refresh-block{display:flex;align-items:center;gap:.9rem;}
+  .countdown{display:flex;gap:.3rem;align-items:center;font-family:'IBM Plex Mono',monospace;}
+  .flip{
+    background:#252938;border:1px solid #3A3E4E;border-radius:6px;
+    padding:.4rem .55rem;font-size:1.05rem;font-weight:600;
+    min-width:2.1em;text-align:center;color:#fff;
+  }
+  .countdown-label{font-size:.68rem;color:#B9BCC9;text-transform:uppercase;letter-spacing:.06em;margin-right:.2rem;}
+  #refresh-btn{
+    background:none;border:1.5px solid #3A3E4E;color:#fff;
+    padding:.5rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;
+    cursor:pointer;display:flex;align-items:center;gap:.4rem;
+  }
+  #refresh-btn:hover{border-color:var(--coral);}
+  #refresh-btn .ico{display:inline-block;transition:transform .4s ease;}
+  #refresh-btn.spinning .ico{animation:spin .6s linear;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  main{max-width:1160px;margin:0 auto;padding:0 1.25rem 3rem;}
+  .board{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:-1.25rem;}
+  @media(min-width:760px){
+    .board{grid-template-columns:1fr 1fr;}
+    .board .wide{grid-column:1 / -1;}
+  }
+  @media(min-width:1040px){
+    .board{grid-template-columns:1fr 1fr 1fr;}
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 1px 2px rgba(28,31,43,.06), 0 8px 24px -18px rgba(28,31,43,.25);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .card-head{
+    padding:1rem 1.25rem .8rem;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:3px solid var(--accent, var(--cobalt));
+  }
+  .card-head h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.05rem;margin:0;
+    color:var(--accent, var(--cobalt));
+  }
+  .card-head .chip{
+    font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+    background:var(--accent-soft, var(--cobalt-soft));color:var(--accent, var(--cobalt));
+    padding:.25rem .55rem;border-radius:999px;
+  }
+  .card-body{padding:1rem 1.25rem 1.25rem;flex:1;}
+
+  .news .card-head{--accent:var(--cobalt);--accent-soft:var(--cobalt-soft);}
+  .hotels .card-head{--accent:var(--teal);--accent-soft:var(--teal-soft);}
+  .dish .card-head{--accent:var(--coral);--accent-soft:var(--coral-soft);}
+  .drink .card-head{--accent:var(--plum);--accent-soft:var(--plum-soft);}
+  .today .card-head{--accent:var(--amber);--accent-soft:var(--amber-soft);}
+  .reviews .card-head{--accent:var(--teal);--accent-soft:var(--teal-soft);}
+
+  .news-item{padding:.75rem 0;border-top:1px solid var(--line);}
+  .news-item:first-child{border-top:none;padding-top:0;}
+  .news-item h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;margin:0 0 .25rem;line-height:1.35;}
+  .news-item a{text-decoration:none;}
+  .news-item a:hover h3{text-decoration:underline;}
+  .news-meta{font-size:.7rem;color:var(--slate);font-family:'IBM Plex Mono',monospace;}
+
+  .status-msg{font-size:.85rem;color:var(--slate);line-height:1.5;padding:.5rem 0;}
+  .status-msg.error{color:var(--coral);}
+
+  .feature-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.15rem;margin:0 0 .25rem;}
+  .feature-desc{font-size:.9rem;color:var(--slate);line-height:1.5;margin:0;}
+  .season-note{font-size:.7rem;color:var(--slate);margin-top:.9rem;padding-top:.7rem;border-top:1px dashed var(--line);}
+
+  .today-item{padding:.7rem 0;border-top:1px solid var(--line);}
+  .today-item:first-child{border-top:none;padding-top:0;}
+  .today-item .label{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--amber);display:block;margin-bottom:.25rem;}
+  .today-item p{margin:0;font-size:.87rem;line-height:1.5;}
+
+  .hotel-card{padding:.8rem 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;}
+  .hotel-card:first-child{border-top:none;padding-top:0;}
+  .hotel-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;margin:0 0 .15rem;}
+  .hotel-dist{font-size:.73rem;color:var(--slate);}
+  .rate{text-align:right;flex-shrink:0;}
+  .rate .amount{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--teal);}
+  .rate .label{font-size:.65rem;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;}
+
+  .empty-state{padding:.5rem 0 1rem;text-align:center;color:var(--slate);font-size:.87rem;line-height:1.5;}
+
+  .review-platforms{display:grid;grid-template-columns:1fr;gap:1rem;}
+  @media(min-width:640px){ .review-platforms{grid-template-columns:1fr 1fr 1fr;} }
+  .platform-card{
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    display:flex;flex-direction:column;background:var(--card);
+  }
+  .platform-head{
+    padding:.7rem .9rem;color:#fff;
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.88rem;
+  }
+  .platform-head .avg{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.85rem;}
+  .platform-booking .platform-head{background:#003580;}
+  .platform-tripadvisor .platform-head{background:#34E0A1;color:#00382F;}
+  .platform-google .platform-head{background:#1A73E8;}
+  .platform-body{padding:.8rem .9rem;}
+  .review{padding:.5rem 0;border-top:1px dashed var(--line);}
+  .review:first-child{padding-top:0;border-top:none;}
+  .review-stars{font-size:.78rem;color:var(--amber);letter-spacing:.1em;}
+  .review p{font-size:.8rem;margin:.2rem 0 .15rem;line-height:1.4;}
+  .review-meta{font-size:.68rem;color:var(--slate);}
+
+  /* ---------- Loading modal ---------- */
+  #loading-modal{
+    position:fixed;inset:0;background:rgba(10,11,16,.6);
+    display:none;align-items:center;justify-content:center;z-index:2000;padding:1.25rem;
+  }
+  #loading-modal.show{display:flex;}
+  .loading-box{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:1.75rem 2rem;text-align:center;max-width:320px;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.5);
+  }
+  .loading-spinner{
+    width:34px;height:34px;border-radius:50%;
+    border:3px solid var(--line);border-top-color:var(--coral);
+    margin:0 auto 1rem;animation:spin 0.8s linear infinite;
+  }
+  .loading-box p{margin:0;font-size:.88rem;color:var(--ink);line-height:1.5;}
+
+  footer{max-width:1160px;margin:0 auto;padding:1rem 1.25rem 2.5rem;font-size:.74rem;color:var(--slate);line-height:1.6;}
+  footer strong{color:var(--ink);}
+  footer a{color:var(--coral);}
+
+  /* ---------- Cookie consent ---------- */
+  #cookie-banner{
+    position:fixed;left:0;right:0;bottom:0;z-index:1000;
+    background:#14161F;color:#fff;border-top:1px solid #3A3E4E;
+    padding:1rem 1.25rem;display:none;
+  }
+  #cookie-banner.show{display:block;}
+  .cookie-inner{max-width:1160px;margin:0 auto;}
+  .cookie-inner p{font-size:.83rem;line-height:1.5;color:#D3D5DE;margin:0 0 .75rem;}
+  .cookie-inner a{color:var(--coral);}
+  .cookie-options{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-bottom:.85rem;}
+  .cookie-option{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:#D3D5DE;}
+  .cookie-actions{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .cookie-btn{
+    border-radius:8px;padding:.55rem 1rem;font-size:.8rem;font-weight:600;
+    cursor:pointer;border:1.5px solid #3A3E4E;background:none;color:#fff;
+  }
+  .cookie-btn.primary{background:var(--coral);border-color:var(--coral);}
+  .cookie-btn:hover{border-color:var(--coral);}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+
+<div id="loading-modal">
+  <div class="loading-box">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <p id="loading-modal-text">Searching hotels, please wait&hellip;</p>
+  </div>
+</div>
+
+
+<header>
+  <div class="top-bar">
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">&#9776;</button>
+    <div class="top-controls">
+      <label class="sr-only" for="theme-select">Theme</label>
+      <select id="theme-select">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+        <option value="ocean">Ocean</option>
+        <option value="sunset">Sunset</option>
+      </select>
+    </div>
+  </div>
+
+  <nav class="site-menu" id="site-menu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+  </nav>
+
+  <div class="brand">
+    <div class="brand-mark">HH</div>
+    <div>
+      <h1>Hotelier Hub</h1>
+      <div class="tagline">UK trade news &amp; local intelligence</div>
+    </div>
+  </div>
+
+  <div id="your-hotel-bar" class="your-hotel-bar" style="display:none;">
+    <span class="your-hotel-label">Your hotel</span>
+    <span class="your-hotel-name" id="your-hotel-name"></span>
+    <button type="button" id="change-hotel-btn">Change</button>
+  </div>
+
+  <div class="header-row">
+    <div>
+      <label class="search-label" for="postcode">Your postcode</label>
+      <div class="search-row">
+        <input id="postcode" type="text" placeholder="e.g. SW1A 1AA" autocomplete="postal-code" aria-describedby="search-status">
+        <button id="locate-btn" type="button">Find</button>
+      </div>
+      <div id="search-status" role="status"></div>
+      <div id="hotel-picker" class="hotel-picker" style="display:none;"></div>
+    </div>
+
+    <div class="refresh-block">
+      <div>
+        <span class="countdown-label">Next refresh</span>
+        <div class="countdown" id="countdown" aria-live="off">
+          <span class="flip" id="cd-h">01</span><span style="color:#B9BCC9;">:</span>
+          <span class="flip" id="cd-m">00</span><span style="color:#B9BCC9;">:</span>
+          <span class="flip" id="cd-s">00</span>
+        </div>
+      </div>
+      <button id="refresh-btn" type="button">
+        <span class="ico">&#8635;</span> Refresh now
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="board">
+
+    <section class="card news wide">
+      <div class="card-head">
+        <h2>UK Hotel Trade News</h2>
+        <span class="chip" id="trade-updated">&mdash;</span>
+      </div>
+      <div class="card-body" id="trade-news"><div class="status-msg">Loading&hellip;</div></div>
+    </section>
+
+    <section class="card news">
+      <div class="card-head">
+        <h2>Local News</h2>
+        <span class="chip" id="local-updated">&mdash;</span>
+      </div>
+      <div class="card-body" id="local-news">
+        <div class="status-msg">Enter a postcode above to localise this feed.</div>
+      </div>
+    </section>
+
+    <section class="card dish">
+      <div class="card-head"><h2>Dish of the Day</h2><span class="chip" id="dish-course">&mdash;</span></div>
+      <div class="card-body" id="dish-body"></div>
+    </section>
+
+    <section class="card drink">
+      <div class="card-head"><h2>Drink of the Day</h2><span class="chip" id="drink-course">&mdash;</span></div>
+      <div class="card-body" id="drink-body"></div>
+    </section>
+
+    <section class="card today wide">
+      <div class="card-head"><h2>Today for the Team</h2><span class="chip">Tip &middot; quote &middot; sales idea</span></div>
+      <div class="card-body" id="today-body"></div>
+    </section>
+
+    <section class="card hotels wide">
+      <div class="card-head"><h2>Nearby Hotels</h2><span class="chip" id="hotels-meta">Room-only rate</span></div>
+      <div class="card-body" id="hotels-list">
+        <div class="empty-state">Enter a postcode above to see nearby hotels and rates.</div>
+      </div>
+    </section>
+
+    <section class="card reviews wide">
+      <div class="card-head"><h2>Reviews</h2><span class="chip">Last 3 per platform</span></div>
+      <div class="card-body" id="reviews-list">
+        <div class="empty-state">Reviews for hotels in your area will appear here once you search a postcode.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <strong>About the data.</strong> Dish/drink of the day and the team card are drawn from seasonal reference files bundled with this site and refresh daily. UK Hotel Trade News and Local News come from a live Google Search via a Netlify Function &mdash; see README.md for the one-time setup. Nearby hotels are real, sourced live from OpenStreetMap; room rates and reviews are still placeholder data pending Booking.com/Tripadvisor partner access. See our <a href="privacy.html">Privacy Policy</a>.
+  </footer>
+</main>
+
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p>We use a small number of cookies to remember things you've chosen, like your saved hotel and theme. See our <a href="privacy.html">Privacy Policy</a> for details.</p>
+    <div class="cookie-options">
+      <label class="cookie-option"><input type="checkbox" checked disabled> Necessary (always on)</label>
+      <label class="cookie-option"><input type="checkbox" id="consent-analytics"> Analytics (not currently used)</label>
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn primary" id="cookie-accept" type="button">Accept all</button>
+      <button class="cookie-btn" id="cookie-reject" type="button">Reject non-essential</button>
+      <button class="cookie-btn" id="cookie-save" type="button">Save preferences</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  // ---------------- Menu toggle ----------------
+  const menuToggle = document.getElementById('menu-toggle');
+  const siteMenu = document.getElementById('site-menu');
+  menuToggle.addEventListener('click', () => {
+    const open = siteMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // ---------------- Theme switcher ----------------
+  const themeSelect = document.getElementById('theme-select');
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  themeSelect.value = currentTheme;
+  themeSelect.addEventListener('change', () => {
+    const val = themeSelect.value;
+    document.documentElement.setAttribute('data-theme', val);
+    try{ localStorage.setItem('hh_theme', val); }catch(e){}
+  });
+
+  // ---------------- Cookie consent ----------------
+  function getConsentCookie(){
+    const match = document.cookie.split('; ').find(row => row.startsWith('hh_consent='));
+    if(!match) return null;
+    try{ return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('='))); }catch(e){ return null; }
+  }
+  function setConsentCookie(value){
+    const d = new Date(); d.setTime(d.getTime() + 365*24*60*60*1000);
+    document.cookie = 'hh_consent=' + encodeURIComponent(JSON.stringify(value)) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+  }
+  const banner = document.getElementById('cookie-banner');
+  const existingConsent = getConsentCookie();
+  if(!existingConsent){ banner.classList.add('show'); }
+  else { document.getElementById('consent-analytics').checked = !!existingConsent.analytics; }
+
+  document.getElementById('cookie-accept').addEventListener('click', () => {
+    setConsentCookie({necessary:true, analytics:true});
+    banner.classList.remove('show');
+  });
+  document.getElementById('cookie-reject').addEventListener('click', () => {
+    setConsentCookie({necessary:true, analytics:false});
+    banner.classList.remove('show');
+  });
+  document.getElementById('cookie-save').addEventListener('click', () => {
+    setConsentCookie({necessary:true, analytics: document.getElementById('consent-analytics').checked});
+    banner.classList.remove('show');
+  });
+
+  function currentSeason(){
+    const m = new Date().getMonth() + 1;
+    if(m===12||m<=2) return "winter";
+    if(m<=5) return "spring";
+    if(m<=8) return "summer";
+    return "autumn";
+  }
+
+  function dayOfYear(){
+    const now = new Date();
+    const start = new Date(now.getFullYear(),0,0);
+    return Math.floor((now - start) / 86400000);
+  }
+
+  function seededRandom(seed){
+    let s = seed % 2147483647;
+    if (s <= 0) s += 2147483646;
+    return function(){ s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+  }
+
+  function pickForToday(list, seasonKey, extraSeed){
+    const season = currentSeason();
+    const pool = seasonKey ? list.filter(x => x.season === season) : list;
+    const source = pool.length ? pool : list;
+    const rand = seededRandom(dayOfYear() * 97 + (extraSeed||0));
+    return source[Math.floor(rand() * source.length)];
+  }
+
+  function loadJSON(path){
+    return fetch(path).then(r => { if(!r.ok) throw new Error('fetch failed'); return r.json(); });
+  }
+
+  loadJSON('data/dishes.json').then(dishes => {
+    const d = pickForToday(dishes, true, 1);
+    document.getElementById('dish-course').textContent = d.course;
+    document.getElementById('dish-body').innerHTML = `
+      <p class="feature-name">${escapeHtml(d.name)}</p>
+      <p class="feature-desc">${escapeHtml(d.description)}</p>
+      <p class="season-note">Seasonal pick for ${currentSeason()} &middot; changes daily</p>
+    `;
+  }).catch(()=>{ document.getElementById('dish-body').innerHTML = '<div class="status-msg error">Could not load dish data.</div>'; });
+
+  loadJSON('data/drinks.json').then(drinks => {
+    const d = pickForToday(drinks, true, 2);
+    document.getElementById('drink-course').textContent = d.category;
+    document.getElementById('drink-body').innerHTML = `
+      <p class="feature-name">${escapeHtml(d.name)}</p>
+      <p class="feature-desc">${escapeHtml(d.description)}</p>
+      <p class="season-note">Seasonal pick for ${currentSeason()} &middot; changes daily</p>
+    `;
+  }).catch(()=>{ document.getElementById('drink-body').innerHTML = '<div class="status-msg error">Could not load drink data.</div>'; });
+
+  loadJSON('data/content.json').then(content => {
+    const tip = pickForToday(content.tips, false, 3);
+    const quote = pickForToday(content.quotes, false, 4);
+    const sale = pickForToday(content.salesIdeas, false, 5);
+    document.getElementById('today-body').innerHTML = `
+      <div class="today-item"><span class="label">Business tip</span><p>${escapeHtml(tip)}</p></div>
+      <div class="today-item"><span class="label">Quote of the day</span><p>${escapeHtml(quote)}</p></div>
+      <div class="today-item"><span class="label">Sales idea</span><p>${escapeHtml(sale)}</p></div>
+    `;
+  }).catch(()=>{ document.getElementById('today-body').innerHTML = '<div class="status-msg error">Could not load today\u2019s content.</div>'; });
+
+  let lastPostcode = null;
+
+  function formatTime(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleString('en-GB', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+  }
+
+  function renderNews(containerId, articles, err){
+    const el = document.getElementById(containerId);
+    if(err){ el.innerHTML = `<div class="status-msg error">${escapeHtml(err)}</div>`; return; }
+    if(!articles || !articles.length){ el.innerHTML = `<div class="status-msg">No headlines returned for this query right now.</div>`; return; }
+    el.innerHTML = articles.map(a => `
+      <div class="news-item">
+        <a href="${escapeAttr(a.url||'#')}" target="_blank" rel="noopener">
+          <h3>${escapeHtml(a.title||'Untitled')}</h3>
+        </a>
+        <div class="news-meta">${escapeHtml(a.source||'Unknown source')} &middot; ${formatTime(a.publishedAt)}</div>
+      </div>
+    `).join('');
+  }
+
+  function fetchNews(type, region){
+    const params = new URLSearchParams({type: type});
+    if(region) params.set('region', region);
+    return fetch('/.netlify/functions/news?' + params.toString())
+      .then(r => r.json())
+      .catch(() => ({ error: "Could not reach the news function. If you're previewing via Netlify Drop, functions aren't active yet \u2014 see README.md." }));
+  }
+
+  function refreshTradeNews(){
+    document.getElementById('trade-news').innerHTML = '<div class="status-msg">Loading&hellip;</div>';
+    fetchNews('trade').then(data => {
+      renderNews('trade-news', data.articles, data.error);
+      document.getElementById('trade-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    });
+  }
+
+  function refreshLocalNews(){
+    if(!lastPostcode) return;
+    document.getElementById('local-news').innerHTML = '<div class="status-msg">Loading&hellip;</div>';
+    fetchNews('local', lastPostcode).then(data => {
+      renderNews('local-news', data.articles, data.error);
+      document.getElementById('local-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    });
+  }
+
+  function fetchHotels(postcode){
+    return fetch('/.netlify/functions/hotels?postcode=' + encodeURIComponent(postcode))
+      .then(r => r.json())
+      .catch(() => ({ error: "Could not reach the hotel lookup. If you're previewing via Netlify Drop, functions aren't active yet \u2014 see README.md.", hotels: [] }));
+  }
+
+  const REVIEW_SNIPPETS = [
+    "Comfortable stay, staff were helpful at check-in.",
+    "Room was clean but a little smaller than expected.",
+    "Great location for exploring the town centre.",
+    "Breakfast was a highlight, would stay again.",
+    "Bit of noise from the road, otherwise fine.",
+    "Excellent value for the rate we paid.",
+    "Bathroom could use an update but bed was comfortable.",
+    "Friendly reception, quick and easy check-out.",
+    "Good base for a short business trip.",
+    "Quiet room, slept well, easy parking nearby.",
+  ];
+
+  function generateReviews(seed, platform){
+    const rand = seededRandom(seed + platform.length);
+    const out = [];
+    const daysAgoBase = [3,9,16];
+    for(let i=0;i<3;i++){
+      const stars = 3 + Math.round(rand()*2);
+      const text = REVIEW_SNIPPETS[Math.floor(rand()*REVIEW_SNIPPETS.length)];
+      out.push({stars, text, daysAgo: daysAgoBase[i] + Math.floor(rand()*4)});
+    }
+    return out;
+  }
+
+  function starString(n){ return "★".repeat(n) + "☆".repeat(5-n); }
+
+  function showLoadingModal(text){
+    document.getElementById('loading-modal-text').textContent = text;
+    document.getElementById('loading-modal').classList.add('show');
+  }
+  function hideLoadingModal(){
+    document.getElementById('loading-modal').classList.remove('show');
+  }
+
+  function renderHotels(postcode){
+    const el = document.getElementById('hotels-list');
+    const meta = document.getElementById('hotels-meta');
+    el.innerHTML = '<div class="status-msg">Looking up hotels near ' + escapeHtml(postcode) + '\u2026</div>';
+    showLoadingModal('Searching hotels near ' + postcode + ', please wait\u2026');
+    return fetchHotels(postcode).then(data => {
+      hideLoadingModal();
+      if(data.error){
+        el.innerHTML = `<div class="status-msg error">${escapeHtml(data.error)}</div>`;
+        return [];
+      }
+      const hotels = data.hotels || [];
+      if(!hotels.length){
+        el.innerHTML = '<div class="empty-state">No hotels found within range of this postcode in OpenStreetMap\u2019s data.</div>';
+        return [];
+      }
+      meta.textContent = `${hotels.length} nearby \u00b7 rates not yet available`;
+      el.innerHTML = hotels.map(h => `
+        <div class="hotel-card">
+          <div>
+            <p class="hotel-name">${escapeHtml(h.name)}</p>
+            <p class="hotel-dist">${h.distanceMiles} mi away${h.address ? ' \u00b7 ' + escapeHtml(h.address) : ''}</p>
+          </div>
+          <div class="rate">
+            <div class="label">rate not yet available</div>
+          </div>
+        </div>
+      `).join('');
+      return hotels;
+    }).catch(() => {
+      hideLoadingModal();
+      el.innerHTML = '<div class="status-msg error">Something went wrong looking up hotels.</div>';
+      return [];
+    });
+  }
+
+  function renderReviews(postcode, hotels){
+    const el = document.getElementById('reviews-list');
+    if(!hotels.length){
+      el.innerHTML = '<div class="empty-state">Reviews will appear once a hotel is found for this postcode.</div>';
+      return;
+    }
+    const platforms = [
+      { name: "Booking.com", cls: "platform-booking" },
+      { name: "Tripadvisor", cls: "platform-tripadvisor" },
+      { name: "Google", cls: "platform-google" }
+    ];
+    const seed = hashPostcode(postcode);
+    const featured = hotels[0];
+    el.innerHTML = `
+      <p style="font-size:.82rem;color:var(--slate);margin:0 0 1rem;">Showing placeholder reviews for <strong style="color:var(--ink);">${escapeHtml(featured.name)}</strong> (a real nearby hotel) \u2014 review content itself is still sample data.</p>
+      <div class="review-platforms">
+    ` + platforms.map(pl => {
+      const revs = generateReviews(seed, pl.name);
+      const avg = (revs.reduce((s,r)=>s+r.stars,0)/revs.length).toFixed(1);
+      return `
+        <div class="platform-card ${pl.cls}">
+          <div class="platform-head"><span>${escapeHtml(pl.name)}</span><span class="avg">${avg} \u2605</span></div>
+          <div class="platform-body">
+            ${revs.map(r => `
+              <div class="review">
+                <div class="review-stars">${starString(r.stars)}</div>
+                <p>${escapeHtml(r.text)}</p>
+                <div class="review-meta">${r.daysAgo} days ago</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('') + `</div>`;
+  }
+
+  function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str==null?'':String(str); return d.innerHTML; }
+  function escapeAttr(str){ return escapeHtml(str).replace(/"/g,'&quot;'); }
+
+  function hashPostcode(pc){
+    let h = 0;
+    for(let i=0;i<pc.length;i++){ h = (h * 31 + pc.charCodeAt(i)) >>> 0; }
+    return h || 1;
+  }
+
+  const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+
+  // ---------------- Cookie helpers ----------------
+
+  function setCookie(name, value, days){
+    const d = new Date();
+    d.setTime(d.getTime() + days*24*60*60*1000);
+    document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
+  }
+  function getCookie(name){
+    const match = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+    return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : null;
+  }
+  function deleteCookie(name){
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+  }
+
+  function saveSelectedHotel(hotel, postcode){
+    setCookie('hh_hotel', JSON.stringify({name: hotel.name, postcode: postcode}), 365);
+    showYourHotelBar(hotel.name);
+  }
+
+  function showYourHotelBar(name){
+    document.getElementById('your-hotel-name').textContent = name;
+    document.getElementById('your-hotel-bar').style.display = 'flex';
+    document.getElementById('hotel-picker').style.display = 'none';
+  }
+
+  function hideYourHotelBar(){
+    document.getElementById('your-hotel-bar').style.display = 'none';
+  }
+
+  // ---------------- Hotel picker ----------------
+
+  function renderHotelPicker(hotels, postcode){
+    const el = document.getElementById('hotel-picker');
+    if(!hotels.length){ el.style.display = 'none'; return; }
+    el.innerHTML = hotels.map((h, i) => `
+      <button type="button" class="hotel-picker-item" data-index="${i}">
+        <span>${escapeHtml(h.name)}</span>
+        <span class="dist">${h.distanceMiles} mi</span>
+      </button>
+    `).join('');
+    el.style.display = 'block';
+    el.querySelectorAll('.hotel-picker-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const hotel = hotels[parseInt(btn.dataset.index, 10)];
+        saveSelectedHotel(hotel, postcode);
+      });
+    });
+  }
+
+  document.getElementById('change-hotel-btn').addEventListener('click', () => {
+    deleteCookie('hh_hotel');
+    hideYourHotelBar();
+    if(lastPostcode){
+      fetchHotels(lastPostcode).then(data => renderHotelPicker(data.hotels || [], lastPostcode));
+    }
+    document.getElementById('postcode').focus();
+  });
+
+  function handleSearch(){
+    const input = document.getElementById('postcode');
+    const status = document.getElementById('search-status');
+    const raw = input.value.trim();
+    if(!raw){ status.textContent = "Enter a postcode to continue."; return; }
+    if(!UK_POSTCODE_RE.test(raw)){ status.textContent = "That doesn't look like a valid UK postcode \u2014 try again."; return; }
+
+    lastPostcode = raw.toUpperCase();
+    status.textContent = "Select your hotel below, or browse the full list once found.";
+    refreshLocalNews();
+    renderHotels(lastPostcode).then(hotels => {
+      renderReviews(lastPostcode, hotels);
+      renderHotelPicker(hotels, lastPostcode);
+    });
+  }
+
+  document.getElementById('locate-btn').addEventListener('click', handleSearch);
+  document.getElementById('postcode').addEventListener('keydown', e => { if(e.key === 'Enter') handleSearch(); });
+
+  // ---------------- Restore saved hotel on load ----------------
+
+  (function restoreSavedHotel(){
+    const raw = getCookie('hh_hotel');
+    if(!raw) return;
+    try{
+      const saved = JSON.parse(raw);
+      if(saved && saved.name && saved.postcode){
+        document.getElementById('postcode').value = saved.postcode;
+        lastPostcode = saved.postcode;
+        showYourHotelBar(saved.name);
+        refreshLocalNews();
+        renderHotels(saved.postcode).then(hotels => renderReviews(saved.postcode, hotels));
+      }
+    }catch(e){ /* ignore malformed cookie */ }
+  })();
+
+  const REFRESH_SECONDS = 3600;
+  let secondsLeft = REFRESH_SECONDS;
+
+  function renderCountdown(){
+    const h = Math.floor(secondsLeft/3600);
+    const m = Math.floor((secondsLeft%3600)/60);
+    const s = secondsLeft%60;
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+
+  function doRefresh(){
+    const btn = document.getElementById('refresh-btn');
+    btn.classList.add('spinning');
+    setTimeout(() => btn.classList.remove('spinning'), 600);
+    refreshTradeNews();
+    refreshLocalNews();
+    secondsLeft = REFRESH_SECONDS;
+    renderCountdown();
+  }
+
+  function tick(){
+    secondsLeft -= 1;
+    if(secondsLeft <= 0){ doRefresh(); return; }
+    renderCountdown();
+  }
+
+  document.getElementById('refresh-btn').addEventListener('click', doRefresh);
+
+  renderCountdown();
+  setInterval(tick, 1000);
+  refreshTradeNews();
+
+})();
+</script>
+
+</body>
+</html>
