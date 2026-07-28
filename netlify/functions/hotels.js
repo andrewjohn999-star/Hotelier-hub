@@ -52,14 +52,18 @@ exports.handler = async function (event) {
       try {
         const overpassRes = await fetch(mirror, {
           method: "POST",
-          headers: { "Content-Type": "text/plain" },
+          headers: {
+            "Content-Type": "text/plain",
+            "User-Agent": "HotelierHub/1.0 (Netlify Function; hotel lookup for a UK hotelier dashboard)"
+          },
           body: query
         });
         if (overpassRes.ok) {
           overpassData = await overpassRes.json();
           break;
         } else {
-          lastError = `${mirror} returned ${overpassRes.status}`;
+          const bodyText = await overpassRes.text().catch(() => "");
+          lastError = `${mirror} returned ${overpassRes.status}${bodyText ? ": " + bodyText.slice(0, 150) : ""}`;
         }
       } catch (e) {
         lastError = `${mirror} failed: ${e.message}`;
@@ -67,7 +71,7 @@ exports.handler = async function (event) {
     }
 
     if (!overpassData) {
-      return { statusCode: 200, body: JSON.stringify({ error: "Hotel data source is temporarily unavailable across all mirrors, try again shortly.", hotels: [] }) };
+      return { statusCode: 200, body: JSON.stringify({ error: "Hotel lookup failed. Details: " + (lastError || "unknown"), hotels: [] }) };
     }
 
     function haversine(lat1, lon1, lat2, lon2){
