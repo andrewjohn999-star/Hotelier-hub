@@ -1,0 +1,14 @@
+[
+  {"season":"winter","course":"starter","name":"Roast parsnip and chestnut soup","description":"Finished with brown butter and a scatter of crisp sage."},
+  {"season":"winter","course":"main","name":"Braised short rib, celeriac mash","description":"Slow-cooked in red wine and thyme, served with buttered greens."},
+  {"season":"winter","course":"dessert","name":"Sticky toffee pudding","description":"Warm dates, toffee sauce, clotted cream."},
+  {"season":"spring","course":"starter","name":"Pea and mint soup", "description":"Fresh garden peas blended with mint, a swirl of crème fraîche."},
+  {"season":"spring","course":"main","name":"Herb-crusted rack of lamb","description":"Served with new potatoes and purple sprouting broccoli."},
+  {"season":"spring","course":"dessert","name":"Rhubarb and custard tart","description":"Forced Yorkshire rhubarb over a vanilla custard base."},
+  {"season":"summer","course":"starter","name":"Heritage tomato and burrata salad","description":"Basil oil, aged balsamic, sea salt flakes."},
+  {"season":"summer","course":"main","name":"Pan-seared sea bass, samphire","description":"With a light lemon and caper butter sauce."},
+  {"season":"summer","course":"dessert","name":"Elderflower panna cotta","description":"Topped with macerated summer berries."},
+  {"season":"autumn","course":"starter","name":"Wild mushroom and truffle arancini","description":"Crisp risotto balls with a Parmesan dip."},
+  {"season":"autumn","course":"main","name":"Roast pheasant, bramble jus","description":"Served with fondant potato and roasted root vegetables."},
+  {"season":"autumn","course":"dessert","name":"Spiced apple and blackberry crumble","description":"Oat crumble topping, vanilla bean ice cream."}
+]

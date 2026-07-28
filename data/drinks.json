@@ -1,0 +1,14 @@
+[
+  {"season":"winter","category":"cocktail","name":"Spiced blackberry old fashioned","description":"Bourbon, blackberry, cinnamon and orange bitters."},
+  {"season":"winter","category":"mocktail","name":"Warm spiced apple cordial","description":"Apple, clove, star anise and a cinnamon stick garnish."},
+  {"season":"winter","category":"wine pairing","name":"Mulled Malbec","description":"Slow-warmed with orange peel and winter spice."},
+  {"season":"spring","category":"cocktail","name":"Elderflower gin fizz","description":"Gin, elderflower cordial, soda, and a twist of lemon."},
+  {"season":"spring","category":"mocktail","name":"Cucumber and mint cooler","description":"Muddled cucumber, mint, lime, and soda water."},
+  {"season":"spring","category":"wine pairing","name":"Chilled English sparkling rosé","description":"Light and floral, served well chilled."},
+  {"season":"summer","category":"cocktail","name":"Strawberry basil smash","description":"Vodka, muddled strawberry, fresh basil, lime."},
+  {"season":"summer","category":"mocktail","name":"Watermelon and mint spritz","description":"Fresh watermelon juice, mint, soda, lime wedge."},
+  {"season":"summer","category":"wine pairing","name":"Chilled Picpoul de Pinet","description":"Crisp and citrus-forward, ideal with seafood."},
+  {"season":"autumn","category":"cocktail","name":"Spiced pear whisky sour","description":"Whisky, pear purée, lemon, a dash of cinnamon."},
+  {"season":"autumn","category":"mocktail","name":"Blackberry and sage shrub","description":"Blackberry vinegar shrub topped with soda."},
+  {"season":"autumn","category":"wine pairing","name":"Rioja Crianza","description":"Warm and savoury, pairs well with game dishes."}
+]
